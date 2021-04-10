@@ -71,6 +71,9 @@ frontend http_redirect
     # Insert a unique request identifier is the headers of the request
     unique-id-header X-Unique-ID
 
+    # updated, 10April'21, redirect to https
+    http-request redirect scheme https unless { ssl_fc } || url_well
+
     # vhost dispatch
 <?php
 foreach ($accountList as &$account) {
