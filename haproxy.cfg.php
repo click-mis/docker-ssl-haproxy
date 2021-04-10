@@ -72,7 +72,7 @@ frontend http_redirect
     unique-id-header X-Unique-ID
 
     # updated, 10April'21, redirect to https
-    http-request redirect scheme https unless { ssl_fc } || url_well
+    http-request redirect scheme https code 301 unless { ssl_fc } || url_well
 
     # vhost dispatch
 <?php
