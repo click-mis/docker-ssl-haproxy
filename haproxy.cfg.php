@@ -117,6 +117,10 @@ frontend https_frontend
     # Insert a unique request identifier is the headers of the request
     unique-id-header X-Unique-ID
 
+    # max-age is mandatory
+    # 16000000 seconds is a bit more than 6 months
+    http-response set-header Strict-Transport-Security "max-age=16000000; includeSubDomains; preload;"
+
     # vhost dispatch
 <?php
 foreach ($accountList as &$account) {

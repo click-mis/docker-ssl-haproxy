@@ -1,4 +1,4 @@
-FROM haproxy:1.8
+FROM haproxy:2.2
 MAINTAINER Jack Liou <jack@click-ap.com>
 
 # Install package
