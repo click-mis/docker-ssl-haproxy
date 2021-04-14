@@ -13,5 +13,13 @@ fi
 
 cp /etc/haproxy/haproxy.cfg.init /etc/haproxy/haproxy.cfg
 
+sed -i 's/\[unix_http_server\]/&\npassword=dummy/' /etc/supervisor/supervisord.conf
+sed -i 's/\[unix_http_server\]/&\nusername=dummy/' /etc/supervisor/supervisord.conf
+
+sed -i 's/\[supervisorctl\]/&\npassword=dummy/' /etc/supervisor/supervisord.conf
+sed -i 's/\[supervisorctl\]/&\nusername=dummy/' /etc/supervisor/supervisord.conf
+
+sed -i 's/\[supervisord\]/&\nuser=root/' /etc/supervisor/supervisord.conf
+
 # Supervisord start
 /usr/bin/supervisord -n -c /etc/supervisor/supervisord.conf

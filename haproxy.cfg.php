@@ -14,20 +14,28 @@ if ($handle = opendir($hleConfPath)) {
             foreach ($accountConf as &$conf) {
                 if (!isset($conf['domain'])) throw new Exception('"domain" undefined.');
                 if (!isset($conf['server'])) throw new Exception('"server" undefined.');
+                $_redirecthttps = isset($conf['redirecthttps']) ? $conf['redirecthttps'] : true;
                 $accountList[] = [
                     'email' => $entry,
                     'domain' => $conf['domain'],
-                    'server' => $conf['server']
+                    'server' => $conf['server'],
+                    'redirecthttps' => $_redirecthttps
                 ];
             }
         }
     }
     closedir($handle);
 }
+
+$severityLevel = 'notice';
+if (getenv("HLE_LOGLEVEL") !== false) {
+    $severityLevel = getenv('HLE_LOGLEVEL');
+}
 ?>
 global
-    log /dev/log    local0
-    log /dev/log    local1 notice
+    #log /dev/log    local0
+    #log /dev/log    local1 notice
+    log stdout  format raw  local0 <?php echo $severityLevel . "\n"; ?> 
     maxconn 102400
     nbproc 1
     pidfile /var/run/haproxy.pid
@@ -72,7 +80,7 @@ frontend http_redirect
     unique-id-header X-Unique-ID
 
     # updated, 10April'21, redirect to https
-    http-request redirect scheme https code 301 unless { ssl_fc } || url_well
+    ###http-request redirect scheme https code 301 unless { ssl_fc } || url_well
 
     # vhost dispatch
 <?php
@@ -150,6 +158,9 @@ backend local_letsencrypt
 foreach ($accountList as &$account) {
     echo 'backend cluster_' . $account['domain'][0] . "\n";
     echo '    option redispatch' . "\n";
+    if (($account['redirecthttps'])) {
+        echo '    http-request redirect scheme https code 301 unless { ssl_fc } ' . "\n";
+    }
     echo '    http-request set-header X-Forwarded-Port %[dst_port]' . "\n";
     echo '    http-request set-header X-Forwarded-Host %[hdr(host)]' . "\n";
     foreach ($account['server'] as $i => $server) {

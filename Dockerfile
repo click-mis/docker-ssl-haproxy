@@ -1,5 +1,5 @@
 FROM haproxy:2.2
-MAINTAINER Jack Liou <jack@click-ap.com>
+LABEL maintainer="Jack Liou <jack@click-ap.com>"
 
 # Install package
 ENV DEBIAN_FRONTEND noninteractive
