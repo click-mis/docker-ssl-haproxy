@@ -127,7 +127,7 @@ frontend https_frontend
 
     # max-age is mandatory
     # 16000000 seconds is a bit more than 6 months
-    http-response set-header Strict-Transport-Security "max-age=16000000; includeSubDomains; preload;"
+    ###http-response set-header Strict-Transport-Security "max-age=16000000; includeSubDomains; preload;"
 
     # vhost dispatch
 <?php
@@ -163,6 +163,9 @@ foreach ($accountList as &$account) {
     }
     echo '    http-request set-header X-Forwarded-Port %[dst_port]' . "\n";
     echo '    http-request set-header X-Forwarded-Host %[hdr(host)]' . "\n";
+    if (($account['redirecthttps'])) {
+        echo '    http-response set-header Strict-Transport-Security "max-age=16000000; includeSubDomains; preload;"' . "\n";
+    }
     foreach ($account['server'] as $i => $server) {
         echo '    server ' . 'node-' . ($i + 1) . '_' . $server . ' ' . $server ." check\n";
     }
